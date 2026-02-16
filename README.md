@@ -6,20 +6,44 @@ Deploy cloud infrastructure using natural language. An AI agent that parses your
 
 ## Architecture
 
-```
-User types: "Deploy a web server on AWS with EC2 and RDS"
-  |
-  v
-[Orchestrator Task] -- coordinates everything
-  |
-  +--> [Parse Request Task] -- LLM extracts structured infra spec (Zod schema)
-  +--> [Generate Terraform Task] -- LLM generates HCL code, STREAMS it live
-  +--> [Validate & Estimate Task] -- validates code, auto-fixes errors, estimates cost
-  +--> [Human Approval] -- wait.forToken() pauses until user clicks Approve
-  +--> [Deploy] -- terraform apply (simulated for demo safety)
-```
+### Overview
 
-For a visual architecture diagram, open `architecture-diagram.html` in your browser or use `architecture-diagram.svg` for slides/thumbnails.
+<p align="center">
+  <img src="architecture-diagram.svg" alt="AI Cloud Infrastructure Agent - Overview" width="100%" />
+</p>
+
+### High-Level Architecture
+
+Shows all layers of the system: User, Frontend, Trigger.dev Orchestration, AI Engine, and Cloud Providers with the data flow between them.
+
+<p align="center">
+  <img src="diagrams/01-high-level-architecture.svg" alt="High-Level Architecture" width="100%" />
+</p>
+
+### Orchestrator Pipeline
+
+The 5-step sequential workflow inside Trigger.dev using `triggerAndWait()`, including the data transformation pipeline and real-time stream events.
+
+<p align="center">
+  <img src="diagrams/02-orchestrator-pipeline.svg" alt="Orchestrator Pipeline" width="100%" />
+</p>
+
+### API Sequence Flow
+
+Complete sequence diagram showing every HTTP request, Trigger.dev task call, AI API call, and stream event in order across all 6 swimlanes.
+
+<p align="center">
+  <img src="diagrams/03-api-sequence-flow.svg" alt="API Sequence Flow" width="100%" />
+</p>
+
+### Interactive Diagrams
+
+For animated, interactive versions of these diagrams, open the HTML files in your browser:
+
+- [`architecture-diagram.html`](architecture-diagram.html) - Full CSS-based architecture with hover effects
+- [`diagrams/01-high-level-architecture.html`](diagrams/01-high-level-architecture.html) - Animated data flow lines
+- [`diagrams/02-orchestrator-pipeline.html`](diagrams/02-orchestrator-pipeline.html) - Animated pipeline with glowing effects
+- [`diagrams/03-api-sequence-flow.html`](diagrams/03-api-sequence-flow.html) - Animated sequence flow
 
 ---
 
