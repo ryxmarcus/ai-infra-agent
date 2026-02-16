@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Cloud Infrastructure Agent - Architecture</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0f;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .container {
+      width: 1400px;
+      position: relative;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .title h1 {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .title p {
+      color: #64748b;
+      font-size: 16px;
+    }
+
+    .title .powered-by {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #475569;
+    }
+
+    .title .powered-by span {
+      color: #22d3ee;
+      font-weight: 600;
+    }
+
+    /* Main layout */
+    .architecture {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      align-items: center;
+    }
+
+    /* Row layouts */
+    .row {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .row-label {
+      writing-mode: vertical-lr;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #475569;
+      padding: 0 8px;
+      min-width: 30px;
+    }
+
+    /* Box styles */
+    .box {
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      transition: transform 0.2s;
+    }
+
+    .box:hover { transform: translateY(-2px); }
+
+    .box .icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .box h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .box p {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    .box .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+
+    /* User box */
+    .user-box {
+      background: linear-gradient(135deg, #1e293b, #1e1b3a);
+      border: 1px solid #334155;
+      width: 320px;
+      text-align: center;
+    }
+
+    .user-box .tag { background: #1e3a5f; color: #60a5fa; }
+
+    /* Frontend box */
+    .frontend-box {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid #2d3a5c;
+      width: 700px;
+    }
+
+    .frontend-box .tag { background: #1e3a5f; color: #60a5fa; }
+
+    .frontend-features {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .frontend-feature {
+      flex: 1;
+      background: rgba(96, 165, 250, 0.08);
+      border: 1px solid rgba(96, 165, 250, 0.15);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .frontend-feature .feat-icon { font-size: 20px; margin-bottom: 4px; }
+    .frontend-feature .feat-label { font-size: 11px; color: #93c5fd; }
+
+    /* Trigger.dev orchestrator */
+    .trigger-wrapper {
+      background: linear-gradient(135deg, #0f172a, #1a0a2e);
+      border: 2px solid #7c3aed;
+      border-radius: 20px;
+      padding: 30px;
+      width: 1100px;
+      position: relative;
+    }
+
+    .trigger-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #7c3aed, #22d3ee);
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .trigger-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+    }
+
+    .trigger-logo {
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      color: white;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 8px 14px;
+      border-radius: 8px;
+    }
+
+    .trigger-header h2 {
+      font-size: 20px;
+      color: #c4b5fd;
+    }
+
+    .trigger-header .features {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .trigger-header .feature-pill {
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(124, 58, 237, 0.2);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      color: #c4b5fd;
+      font-weight: 500;
+    }
+
+    /* Pipeline steps */
+    .pipeline {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .step {
+      flex: 1;
+      border-radius: 12px;
+      padding: 18px 14px;
+      text-align: center;
+      position: relative;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .step .step-num {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0a0a0f;
+      border: 2px solid;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step .step-icon { font-size: 26px; margin: 8px 0 8px; }
+    .step h4 { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .step p { font-size: 11px; color: #94a3b8; line-height: 1.3; }
+    .step .tech { font-size: 10px; color: #64748b; margin-top: auto; padding-top: 8px; }
+
+    .step-parse {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+    .step-parse .step-num { border-color: #3b82f6; color: #3b82f6; }
+    .step-parse h4 { color: #93c5fd; }
+
+    .step-generate {
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+    }
+    .step-generate .step-num { border-color: #a855f7; color: #a855f7; }
+    .step-generate h4 { color: #d8b4fe; }
+
+    .step-validate {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    .step-validate .step-num { border-color: #f59e0b; color: #f59e0b; }
+    .step-validate h4 { color: #fcd34d; }
+
+    .step-approve {
+      background: rgba(34, 211, 238, 0.08);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+    }
+    .step-approve .step-num { border-color: #22d3ee; color: #22d3ee; }
+    .step-approve h4 { color: #67e8f9; }
+
+    .step-deploy {
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+    .step-deploy .step-num { border-color: #22c55e; color: #22c55e; }
+    .step-deploy h4 { color: #86efac; }
+
+    /* Arrow between steps */
+    .step-arrow {
+      display: flex;
+      align-items: center;
+      color: #475569;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Cloud providers */
+    .cloud-row {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .cloud-box {
+      border-radius: 12px;
+      padding: 20px 32px;
+      text-align: center;
+      width: 200px;
+    }
+
+    .cloud-box .cloud-icon { font-size: 36px; margin-bottom: 8px; }
+    .cloud-box h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .cloud-box p { font-size: 11px; color: #94a3b8; }
+
+    .cloud-aws {
+      background: rgba(255, 153, 0, 0.08);
+      border: 1px solid rgba(255, 153, 0, 0.25);
+    }
+    .cloud-aws h4 { color: #ff9900; }
+
+    .cloud-gcp {
+      background: rgba(66, 133, 244, 0.08);
+      border: 1px solid rgba(66, 133, 244, 0.25);
+    }
+    .cloud-gcp h4 { color: #4285f4; }
+
+    .cloud-azure {
+      background: rgba(0, 120, 212, 0.08);
+      border: 1px solid rgba(0, 120, 212, 0.25);
+    }
+    .cloud-azure h4 { color: #0078d4; }
+
+    /* Arrows */
+    .arrow-down {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #475569;
+      font-size: 12px;
+      padding: 4px 0;
+    }
+
+    .arrow-down .arrow-line {
+      width: 2px;
+      height: 20px;
+      background: linear-gradient(to bottom, #475569, #334155);
+    }
+
+    .arrow-down .arrow-label {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Streams indicator */
+    .streams-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px 20px;
+      background: rgba(34, 211, 238, 0.05);
+      border: 1px dashed rgba(34, 211, 238, 0.2);
+      border-radius: 8px;
+      width: 700px;
+    }
+
+    .streams-bar .stream-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22d3ee;
+      animation: pulse 2s infinite;
+    }
+
+    .streams-bar span {
+      font-size: 11px;
+      color: #67e8f9;
+      font-weight: 500;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* Loop indicator */
+    .loop-indicator {
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .loop-arrow {
+      font-size: 16px;
+      color: #f59e0b;
+    }
+
+    .loop-label {
+      font-size: 9px;
+      color: #f59e0b;
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Title -->
+    <div class="title">
+      <h1>AI Cloud Infrastructure Agent</h1>
+      <p>Natural Language to Deployed Infrastructure</p>
+      <p class="powered-by">Powered by <span>Trigger.dev</span> + Vercel AI SDK + Terraform</p>
+    </div>
+
+    <div class="architecture">
+      <!-- User -->
+      <div class="user-box box">
+        <span class="icon">&#128100;</span>
+        <h3>User / Developer</h3>
+        <p>"Deploy a web server on AWS with EC2, RDS PostgreSQL, and S3 bucket in us-west-2"</p>
+        <span class="tag">Natural Language Input</span>
+      </div>
+
+      <!-- Arrow -->
+      <div class="arrow-down">
+        <div class="arrow-line"></div>
+        <span>&#9660;</span>
+        <span class="arrow-label">HTTP POST</span>
+      </div>
+
+      <!-- Frontend -->
+      <div class="frontend-box box">
+        <span class="icon">&#127760;</span>
+        <h3>Next.js Frontend</h3>
+        <p>Interactive dashboard with real-time streaming UI</p>
+        <div class="frontend-features">
+          <div class="frontend-feature">
+            <div class="feat-icon">&#9998;</div>
+            <div class="feat-label">Prompt Input</div>
+          </div>
+          <div class="frontend-feature">
+            <div class="feat-icon">&#128196;</div>
+            <div class="feat-label">Live Code Viewer</div>
+          </div>
+          <div class="frontend-feature">
+            <div class="feat-icon">&#128200;</div>
+            <div class="feat-label">Progress Timeline</div>
+          </div>
+          <div class="frontend-feature">
+            <div class="feat-icon">&#9989;</div>
+            <div class="feat-label">Approval Panel</div>
+          </div>
+        </div>
+        <span class="tag">React + Trigger.dev React Hooks</span>
+      </div>
+
+      <!-- Streams Bar -->
+      <div class="streams-bar">
+        <div class="stream-dot"></div>
+        <span>Real-time Streams (useRealtimeStream)</span>
+        <div class="stream-dot" style="animation-delay: 0.5s"></div>
+        <span>progressStream</span>
+        <div class="stream-dot" style="animation-delay: 1s"></div>
+        <span>aiOutputStream</span>
+        <div class="stream-dot" style="animation-delay: 1.5s"></div>
+        <span>terraformOutputStream</span>
+      </div>
+
+      <!-- Arrow -->
+      <div class="arrow-down">
+        <div class="arrow-line"></div>
+        <span>&#9660; &#9650;</span>
+        <span class="arrow-label">Trigger + Stream</span>
+      </div>
+
+      <!-- Trigger.dev Orchestrator -->
+      <div class="trigger-wrapper">
+        <div class="trigger-header">
+          <div class="trigger-logo">Trigger.dev</div>
+          <h2>Agent Orchestrator</h2>
+          <div class="features">
+            <span class="feature-pill">No Timeouts</span>
+            <span class="feature-pill">Auto Retries</span>
+            <span class="feature-pill">Queues</span>
+            <span class="feature-pill">Observability</span>
+            <span class="feature-pill">Human-in-the-Loop</span>
+          </div>
+        </div>
+
+        <!-- Pipeline -->
+        <div class="pipeline">
+          <!-- Step 1: Parse -->
+          <div class="step step-parse">
+            <div class="step-num">1</div>
+            <div class="step-icon">&#129504;</div>
+            <h4>Parse Request</h4>
+            <p>LLM extracts structured infrastructure spec from natural language</p>
+            <div class="tech">generateObject() + Zod Schema</div>
+          </div>
+
+          <div class="step-arrow">&#10132;</div>
+
+          <!-- Step 2: Generate -->
+          <div class="step step-generate">
+            <div class="step-num">2</div>
+            <div class="step-icon">&#128187;</div>
+            <h4>Generate Terraform</h4>
+            <p>AI generates production-ready HCL code, streamed in real-time</p>
+            <div class="tech">streamText() + aiOutputStream</div>
+          </div>
+
+          <div class="step-arrow">&#10132;</div>
+
+          <!-- Step 3: Validate -->
+          <div class="step step-validate" style="position: relative;">
+            <div class="step-num">3</div>
+            <div class="step-icon">&#128269;</div>
+            <h4>Validate + Cost</h4>
+            <p>Validates code, auto-fixes errors, estimates monthly cost</p>
+            <div class="tech">Evaluator-Optimizer Pattern</div>
+            <div class="loop-indicator">
+              <span class="loop-arrow">&#8635;</span>
+              <span class="loop-label">Auto-fix loop</span>
+            </div>
+          </div>
+
+          <div class="step-arrow">&#10132;</div>
+
+          <!-- Step 4: Approve -->
+          <div class="step step-approve">
+            <div class="step-num">4</div>
+            <div class="step-icon">&#9995;</div>
+            <h4>Human Approval</h4>
+            <p>Task pauses. User reviews code + cost, then approves or rejects</p>
+            <div class="tech">wait.forToken()</div>
+          </div>
+
+          <div class="step-arrow">&#10132;</div>
+
+          <!-- Step 5: Deploy -->
+          <div class="step step-deploy">
+            <div class="step-num">5</div>
+            <div class="step-icon">&#128640;</div>
+            <h4>Deploy</h4>
+            <p>Executes terraform apply, streams output live</p>
+            <div class="tech">terraform apply</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="arrow-down">
+        <div class="arrow-line"></div>
+        <span>&#9660;</span>
+        <span class="arrow-label">Terraform Apply</span>
+      </div>
+
+      <!-- Cloud Providers -->
+      <div class="cloud-row">
+        <div class="cloud-box cloud-aws">
+          <div class="cloud-icon">&#9729;&#65039;</div>
+          <h4>Amazon Web Services</h4>
+          <p>EC2, RDS, S3, VPC, Lambda, EKS, ALB</p>
+        </div>
+        <div class="cloud-box cloud-gcp">
+          <div class="cloud-icon">&#9729;&#65039;</div>
+          <h4>Google Cloud Platform</h4>
+          <p>GCE, Cloud SQL, GCS, VPC, GKE, Cloud Functions</p>
+        </div>
+        <div class="cloud-box cloud-azure">
+          <div class="cloud-icon">&#9729;&#65039;</div>
+          <h4>Microsoft Azure</h4>
+          <p>VMs, Azure DB, Storage, VNet, AKS, Functions</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
