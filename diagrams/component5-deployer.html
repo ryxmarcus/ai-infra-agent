@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component 5: Terraform Deployer - AI Infra Agent</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; }
+    svg { max-width: 1400px; width: 100%; height: auto; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes dash { to { stroke-dashoffset: -20; } }
+    .animated-line { animation: dash 1s linear infinite; }
+    .pulse { animation: pulse 2s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a1a"/>
+      <stop offset="100%" style="stop-color:#111133"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1f15"/>
+      <stop offset="100%" style="stop-color:#0d3320"/>
+    </linearGradient>
+    <linearGradient id="fileGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1a14"/>
+      <stop offset="100%" style="stop-color:#1a3326"/>
+    </linearGradient>
+    <linearGradient id="terraformGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0d33"/>
+      <stop offset="100%" style="stop-color:#2d1b69"/>
+    </linearGradient>
+    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a2e0d"/>
+      <stop offset="100%" style="stop-color:#2d5c1a"/>
+    </linearGradient>
+    <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#34d399"/>
+    </linearGradient>
+    <linearGradient id="streamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#22d3ee"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="tfStreamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#6ee7b7"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+    <marker id="greenArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+    <marker id="streamArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    </marker>
+    <marker id="tfArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6ee7b7"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="url(#bgGrad)"/>
+
+  <!-- Title -->
+  <text x="600" y="45" text-anchor="middle" fill="#e2e8f0" font-size="26" font-weight="bold">Component 5: Terraform Deployer</text>
+  <text x="600" y="72" text-anchor="middle" fill="#94a3b8" font-size="13">deployTerraform — Write Files, Init, Apply → Live Infrastructure</text>
+  <rect x="530" y="80" width="140" height="22" rx="11" fill="#0d3320" stroke="#10b981" stroke-width="1"/>
+  <text x="600" y="95" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">STEP 5 — GREEN</text>
+
+  <!-- ═══════════ INPUT ═══════════ -->
+  <text x="35" y="140" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">INPUT</text>
+  <rect x="25" y="155" width="185" height="110" rx="14" fill="url(#greenGrad)" stroke="#10b981" stroke-width="2" filter="url(#softShadow)"/>
+
+  <rect x="45" y="175" width="145" height="28" rx="6" fill="#0a1f15" stroke="#10b981" stroke-width="0.5"/>
+  <text x="55" y="193" fill="#6ee7b7" font-size="11" font-weight="600">terraformCode</text>
+
+  <rect x="45" y="211" width="145" height="28" rx="6" fill="#0a1f15" stroke="#10b981" stroke-width="0.5"/>
+  <text x="55" y="229" fill="#6ee7b7" font-size="11" font-weight="600">projectName</text>
+
+  <text x="117" y="258" text-anchor="middle" fill="#64748b" font-size="9">From approved Step 3 output</text>
+
+  <!-- Arrow: Input -> Phase 1 -->
+  <line x1="210" y1="210" x2="265" y2="210" stroke="url(#arrowGrad)" stroke-width="2.5" marker-end="url(#greenArrow)"/>
+
+  <!-- ═══════════ PHASE 1: FILE WRITE ═══════════ -->
+  <text x="280" y="140" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">PHASE 1: WRITE FILES</text>
+  <rect x="270" y="155" width="260" height="155" rx="14" fill="url(#fileGrad)" stroke="#10b981" stroke-width="2" filter="url(#softShadow)"/>
+
+  <rect x="290" y="172" width="220" height="35" rx="8" fill="#0a1f15" stroke="#34d399" stroke-width="1.5"/>
+  <text x="400" y="190" text-anchor="middle" fill="#34d399" font-size="11" font-weight="600">Strip markdown fences</text>
+  <text x="400" y="203" text-anchor="middle" fill="#64748b" font-size="9">Remove ```hcl ... ``` wrappers</text>
+
+  <rect x="290" y="215" width="220" height="35" rx="8" fill="#0a1f15" stroke="#34d399" stroke-width="1.5"/>
+  <text x="400" y="233" text-anchor="middle" fill="#34d399" font-size="11" font-weight="600">Write main.tf</text>
+  <text x="400" y="246" text-anchor="middle" fill="#64748b" font-size="9">fs.writeFile() to disk</text>
+
+  <rect x="290" y="260" width="220" height="35" rx="8" fill="#0d0d1a" stroke="#a78bfa" stroke-width="1"/>
+  <text x="400" y="278" text-anchor="middle" fill="#c4b5fd" font-size="10" font-family="monospace">generated/{projectName}/main.tf</text>
+  <text x="400" y="291" text-anchor="middle" fill="#64748b" font-size="8">Output directory path</text>
+
+  <!-- Arrow: Phase 1 -> Phase 2 -->
+  <line x1="530" y1="230" x2="570" y2="230" stroke="url(#arrowGrad)" stroke-width="2.5" marker-end="url(#greenArrow)"/>
+
+  <!-- ═══════════ PHASE 2: TERRAFORM INIT ═══════════ -->
+  <text x="590" y="140" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">PHASE 2: TERRAFORM INIT</text>
+  <rect x="580" y="155" width="260" height="130" rx="14" fill="url(#terraformGrad)" stroke="#7c3aed" stroke-width="2" filter="url(#softShadow)"/>
+
+  <rect x="600" y="172" width="220" height="45" rx="10" fill="#1a0d33" stroke="#a78bfa" stroke-width="1.5" filter="url(#glow)"/>
+  <text x="710" y="193" text-anchor="middle" fill="#c4b5fd" font-size="13" font-weight="bold">execFile("terraform")</text>
+  <text x="710" y="210" text-anchor="middle" fill="#64748b" font-size="9">["init"]</text>
+
+  <rect x="600" y="225" width="220" height="28" rx="6" fill="#1a0d33" stroke="#a78bfa" stroke-width="0.5"/>
+  <text x="710" y="243" text-anchor="middle" fill="#c4b5fd" font-size="10">Downloads providers &amp; modules</text>
+
+  <rect x="600" y="260" width="220" height="18" rx="4" fill="#1a0d33" stroke="#22d3ee" stroke-width="0.5"/>
+  <text x="710" y="273" text-anchor="middle" fill="#22d3ee" font-size="9">stdout → terraformOutputStream</text>
+
+  <!-- Arrow: Phase 2 -> Phase 3 -->
+  <line x1="840" y1="230" x2="880" y2="230" stroke="url(#arrowGrad)" stroke-width="2.5" marker-end="url(#greenArrow)"/>
+
+  <!-- ═══════════ PHASE 3: TERRAFORM APPLY ═══════════ -->
+  <text x="900" y="140" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">PHASE 3: TERRAFORM APPLY</text>
+  <rect x="890" y="155" width="280" height="155" rx="14" fill="url(#terraformGrad)" stroke="#10b981" stroke-width="2.5" filter="url(#softShadow)"/>
+
+  <rect x="910" y="172" width="240" height="50" rx="10" fill="#1a0d33" stroke="#34d399" stroke-width="2" filter="url(#glow)"/>
+  <text x="1030" y="195" text-anchor="middle" fill="#34d399" font-size="14" font-weight="bold">execFile("terraform")</text>
+  <text x="1030" y="213" text-anchor="middle" fill="#64748b" font-size="10">["apply", "-auto-approve"]</text>
+
+  <rect x="910" y="230" width="240" height="28" rx="6" fill="#1a0d33" stroke="#10b981" stroke-width="0.5"/>
+  <text x="1030" y="248" text-anchor="middle" fill="#6ee7b7" font-size="10">Creates actual cloud resources</text>
+
+  <rect x="910" y="265" width="240" height="28" rx="6" fill="#1a0d33" stroke="#22d3ee" stroke-width="0.5"/>
+  <text x="1030" y="283" text-anchor="middle" fill="#22d3ee" font-size="10">stdout → terraformOutputStream</text>
+
+  <!-- ═══════════ CONFIG BAR ═══════════ -->
+  <rect x="25" y="335" width="1145" height="35" rx="8" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="45" y="357" fill="#f59e0b" font-size="10" font-weight="600">CONFIG:</text>
+  <text x="110" y="357" fill="#94a3b8" font-size="10">maxDuration: 300s (5 min) | retry: none (deployment is not idempotent) | cwd: generated/{projectName}/</text>
+
+  <!-- ═══════════ DUAL STREAMS ═══════════ -->
+  <text x="60" y="405" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">REAL-TIME OUTPUT STREAMS</text>
+
+  <!-- Progress stream -->
+  <rect x="50" y="420" width="530" height="90" rx="14" fill="url(#greenGrad)" stroke="#22d3ee" stroke-width="1.5" filter="url(#softShadow)"/>
+  <text x="70" y="442" fill="#22d3ee" font-size="11" font-weight="600">progressStream</text>
+
+  <rect x="70" y="450" width="490" height="48" rx="6" fill="#0a1f15" stroke="#22d3ee" stroke-width="0.5"/>
+  <text x="80" y="468" fill="#a5f3fc" font-size="9">{ step: "deploy", status: "running", message: "Running terraform init..." }</text>
+  <text x="80" y="484" fill="#a5f3fc" font-size="9">{ step: "deploy", status: "complete", message: "Infrastructure deployed!" }</text>
+
+  <!-- Terraform output stream -->
+  <rect x="610" y="420" width="560" height="90" rx="14" fill="url(#greenGrad)" stroke="#10b981" stroke-width="1.5" filter="url(#softShadow)"/>
+  <text x="630" y="442" fill="#6ee7b7" font-size="11" font-weight="600">terraformOutputStream</text>
+
+  <rect x="630" y="450" width="520" height="48" rx="6" fill="#0d0d1a" stroke="#10b981" stroke-width="0.5"/>
+  <text x="640" y="468" fill="#34d399" font-size="9" font-family="monospace">Initializing provider plugins...</text>
+  <text x="640" y="484" fill="#34d399" font-size="9" font-family="monospace">aws_instance.web: Creating... [id=i-0abc123]  Apply complete! Resources: 3 added.</text>
+
+  <!-- Arrows from Phases to Streams -->
+  <path d="M 400 310 C 400 370, 315 400, 315 420" stroke="url(#streamGrad)" stroke-width="2" fill="none" stroke-dasharray="6,4" class="animated-line" marker-end="url(#streamArrow)"/>
+  <path d="M 1030 310 C 1030 370, 890 400, 890 420" stroke="url(#tfStreamGrad)" stroke-width="2" fill="none" stroke-dasharray="6,4" class="animated-line" marker-end="url(#tfArrow)"/>
+
+  <!-- ═══════════ FRONTEND RECEIVERS ═══════════ -->
+  <text x="60" y="545" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">FRONTEND COMPONENTS</text>
+
+  <rect x="50" y="558" width="200" height="40" rx="10" fill="#1e1e2e" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="150" y="583" text-anchor="middle" fill="#c4b5fd" font-size="11">ProgressTimeline.tsx</text>
+  <path d="M 200 510 L 150 553" stroke="url(#streamGrad)" stroke-width="1.5" fill="none" stroke-dasharray="4,3" class="animated-line" marker-end="url(#streamArrow)"/>
+
+  <rect x="280" y="558" width="200" height="40" rx="10" fill="#1e1e2e" stroke="#10b981" stroke-width="1.5"/>
+  <text x="380" y="583" text-anchor="middle" fill="#6ee7b7" font-size="11">TerraformOutput.tsx</text>
+  <path d="M 890 510 C 700 530, 450 545, 380 553" stroke="url(#tfStreamGrad)" stroke-width="1.5" fill="none" stroke-dasharray="4,3" class="animated-line" marker-end="url(#tfArrow)"/>
+
+  <!-- ═══════════ CLOUD OUTPUT ═══════════ -->
+  <text x="700" y="545" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">CLOUD RESOURCES CREATED</text>
+  <rect x="690" y="558" width="480" height="55" rx="14" fill="url(#cloudGrad)" stroke="#22c55e" stroke-width="2" filter="url(#softShadow)"/>
+
+  <rect x="710" y="572" width="100" height="30" rx="8" fill="#1a2e0d" stroke="#f97316" stroke-width="1.5"/>
+  <text x="760" y="591" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="bold">EC2</text>
+
+  <rect x="820" y="572" width="100" height="30" rx="8" fill="#1a2e0d" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="870" y="591" text-anchor="middle" fill="#60a5fa" font-size="11" font-weight="bold">RDS</text>
+
+  <rect x="930" y="572" width="100" height="30" rx="8" fill="#1a2e0d" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="980" y="591" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="bold">S3</text>
+
+  <rect x="1040" y="572" width="110" height="30" rx="8" fill="#1a2e0d" stroke="#22c55e" stroke-width="1"/>
+  <text x="1095" y="591" text-anchor="middle" fill="#4ade80" font-size="10">+ more...</text>
+
+  <!-- ═══════════ INFO BOXES ═══════════ -->
+  <rect x="50" y="625" width="340" height="55" rx="12" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="70" y="647" fill="#e2e8f0" font-size="11" font-weight="600">File: src/trigger/deploy-terraform.ts</text>
+  <text x="70" y="665" fill="#94a3b8" font-size="10">Task ID: deployTerraform | maxDuration: 300s | No retry</text>
+
+  <rect x="820" y="625" width="350" height="55" rx="12" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="840" y="647" fill="#e2e8f0" font-size="11" font-weight="600">Key Concepts</text>
+  <text x="840" y="665" fill="#34d399" font-size="10">• execFile() for child process, not shell injection</text>
+  <text x="840" y="678" fill="#22d3ee" font-size="10">• Dual streams: progress updates + raw terraform output</text>
+</svg>
+</body>
+</html>

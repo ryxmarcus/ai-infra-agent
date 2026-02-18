@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component 3: Validator &amp; Auto-Fix Loop - AI Infra Agent</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; }
+    svg { max-width: 1400px; width: 100%; height: auto; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes dash { to { stroke-dashoffset: -20; } }
+    @keyframes loopDash { to { stroke-dashoffset: -30; } }
+    .animated-line { animation: dash 1s linear infinite; }
+    .loop-line { animation: loopDash 1.5s linear infinite; }
+    .pulse { animation: pulse 2s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a1a"/>
+      <stop offset="100%" style="stop-color:#111133"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1f12"/>
+      <stop offset="100%" style="stop-color:#1a3a22"/>
+    </linearGradient>
+    <linearGradient id="yellowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1f1a0d"/>
+      <stop offset="100%" style="stop-color:#3a2e1a"/>
+    </linearGradient>
+    <linearGradient id="fixGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a1a0a"/>
+      <stop offset="100%" style="stop-color:#4a2e10"/>
+    </linearGradient>
+    <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#22c55e"/>
+      <stop offset="100%" style="stop-color:#4ade80"/>
+    </linearGradient>
+    <linearGradient id="loopGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="streamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#22d3ee"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+    <marker id="greenArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e"/>
+    </marker>
+    <marker id="yellowArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+    <marker id="streamArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="url(#bgGrad)"/>
+
+  <!-- Title -->
+  <text x="600" y="42" text-anchor="middle" fill="#e2e8f0" font-size="26" font-weight="bold">Component 3: Validator &amp; Auto-Fix Loop</text>
+  <text x="600" y="67" text-anchor="middle" fill="#94a3b8" font-size="13">validateAndEstimate — Self-Healing Evaluator-Optimizer Pattern</text>
+  <rect x="505" y="75" width="190" height="22" rx="11" fill="#1a3a22" stroke="#22c55e" stroke-width="1"/>
+  <text x="600" y="90" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="600">STEP 3 — GREEN / YELLOW</text>
+
+  <!-- ═══════════ INPUT ═══════════ -->
+  <text x="35" y="130" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">INPUT</text>
+  <rect x="25" y="142" width="170" height="80" rx="12" fill="url(#greenGrad)" stroke="#22c55e" stroke-width="2" filter="url(#softShadow)"/>
+  <text x="110" y="170" text-anchor="middle" fill="#4ade80" font-size="12" font-weight="bold">terraformCode</text>
+  <text x="110" y="188" text-anchor="middle" fill="#64748b" font-size="10">string (HCL)</text>
+  <text x="110" y="206" text-anchor="middle" fill="#64748b" font-size="9">attempt: 1 (default)</text>
+
+  <!-- Arrow: Input -> Validate -->
+  <line x1="195" y1="182" x2="255" y2="182" stroke="url(#arrowGrad)" stroke-width="2" marker-end="url(#greenArrow)"/>
+
+  <!-- ═══════════ AI CALL 1: VALIDATE ═══════════ -->
+  <text x="270" y="130" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">AI CALL 1: VALIDATE</text>
+  <rect x="260" y="142" width="280" height="150" rx="14" fill="url(#greenGrad)" stroke="#22c55e" stroke-width="2" filter="url(#softShadow)"/>
+
+  <rect x="280" y="158" width="240" height="38" rx="8" fill="#0d1f12" stroke="#4ade80" stroke-width="1.5" filter="url(#glow)"/>
+  <text x="400" y="177" text-anchor="middle" fill="#4ade80" font-size="13" font-weight="bold">generateObject()</text>
+  <text x="400" y="192" text-anchor="middle" fill="#64748b" font-size="9">Gemini 2.0 Flash</text>
+
+  <rect x="280" y="205" width="240" height="28" rx="6" fill="#0d1f12" stroke="#22c55e" stroke-width="0.5"/>
+  <text x="290" y="223" fill="#86efac" font-size="10">Schema: ValidationResultSchema</text>
+
+  <rect x="280" y="240" width="115" height="38" rx="6" fill="#0d1f12" stroke="#22c55e" stroke-width="0.5"/>
+  <text x="337" y="256" text-anchor="middle" fill="#86efac" font-size="9" font-weight="600">isValid: boolean</text>
+  <text x="337" y="270" text-anchor="middle" fill="#64748b" font-size="8">errors[]</text>
+
+  <rect x="405" y="240" width="115" height="38" rx="6" fill="#0d1f12" stroke="#22c55e" stroke-width="0.5"/>
+  <text x="462" y="256" text-anchor="middle" fill="#86efac" font-size="9" font-weight="600">suggestions[]</text>
+  <text x="462" y="270" text-anchor="middle" fill="#64748b" font-size="8">bestPractices[]</text>
+
+  <!-- ═══════════ DECISION DIAMOND ═══════════ -->
+  <polygon points="600,190 650,220 600,250 550,220" fill="#1f1a0d" stroke="#f59e0b" stroke-width="2" filter="url(#glow)"/>
+  <text x="600" y="224" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="bold">Valid?</text>
+
+  <!-- Arrow: Validate -> Decision -->
+  <line x1="540" y1="220" x2="550" y2="220" stroke="url(#arrowGrad)" stroke-width="2" marker-end="url(#greenArrow)"/>
+
+  <!-- ═══════════ YES PATH (down) -> Cost Estimate ═══════════ -->
+  <line x1="600" y1="250" x2="600" y2="290" stroke="#22c55e" stroke-width="2" marker-end="url(#greenArrow)"/>
+  <text x="618" y="275" fill="#4ade80" font-size="10" font-weight="600">YES</text>
+
+  <!-- ═══════════ NO PATH (right) -> Fix ═══════════ -->
+  <line x1="650" y1="220" x2="710" y2="220" stroke="#f59e0b" stroke-width="2" marker-end="url(#yellowArrow)"/>
+  <text x="675" y="212" fill="#fbbf24" font-size="10" font-weight="600">NO</text>
+
+  <!-- ═══════════ AI CALL 2: FIX (right side) ═══════════ -->
+  <text x="725" y="130" fill="#f59e0b" font-size="11" font-weight="600" letter-spacing="2">AI CALL 2: AUTO-FIX</text>
+  <rect x="715" y="142" width="280" height="150" rx="14" fill="url(#fixGrad)" stroke="#f59e0b" stroke-width="2" filter="url(#softShadow)"/>
+
+  <rect x="735" y="158" width="240" height="38" rx="8" fill="#2a1a0a" stroke="#fbbf24" stroke-width="1.5" filter="url(#glow)"/>
+  <text x="855" y="177" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="bold">generateText()</text>
+  <text x="855" y="192" text-anchor="middle" fill="#64748b" font-size="9">Gemini 2.0 Flash</text>
+
+  <rect x="735" y="205" width="240" height="28" rx="6" fill="#2a1a0a" stroke="#f59e0b" stroke-width="0.5"/>
+  <text x="745" y="223" fill="#fbbf24" font-size="10">Prompt: TERRAFORM_FIXER_SYSTEM_PROMPT</text>
+
+  <rect x="735" y="240" width="240" height="38" rx="6" fill="#2a1a0a" stroke="#f59e0b" stroke-width="0.5"/>
+  <text x="745" y="256" fill="#fbbf24" font-size="9">Input: code + errors + suggestions</text>
+  <text x="745" y="270" fill="#94a3b8" font-size="9">Output: fixedTerraformCode</text>
+
+  <!-- ═══════════ RECURSIVE LOOP ARROW ═══════════ -->
+  <path d="M 855 292 C 855 330, 855 340, 780 350 C 700 360, 300 360, 200 340 C 140 330, 110 280, 110 230" stroke="url(#loopGrad)" stroke-width="2.5" fill="none" stroke-dasharray="8,4" class="loop-line" marker-end="url(#yellowArrow)"/>
+  <rect x="430" y="340" width="180" height="24" rx="12" fill="#1f1a0d" stroke="#f59e0b" stroke-width="1"/>
+  <text x="520" y="356" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="600">RECURSIVE: attempt + 1</text>
+  <text x="520" y="380" text-anchor="middle" fill="#94a3b8" font-size="9">Max 3 attempts, then fail with errors</text>
+
+  <!-- ═══════════ AI CALL 3: COST ESTIMATE ═══════════ -->
+  <text x="420" y="310" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">AI CALL 3: COST ESTIMATE</text>
+  <rect x="410" y="320" width="380" height="130" rx="14" fill="url(#greenGrad)" stroke="#22c55e" stroke-width="2" filter="url(#softShadow)"/>
+
+  <rect x="430" y="340" width="340" height="38" rx="8" fill="#0d1f12" stroke="#4ade80" stroke-width="1.5" filter="url(#glow)"/>
+  <text x="600" y="359" text-anchor="middle" fill="#4ade80" font-size="13" font-weight="bold">generateObject()</text>
+  <text x="600" y="374" text-anchor="middle" fill="#64748b" font-size="9">Gemini 2.0 Flash</text>
+
+  <rect x="430" y="385" width="160" height="28" rx="6" fill="#0d1f12" stroke="#22c55e" stroke-width="0.5"/>
+  <text x="440" y="403" fill="#86efac" font-size="10">Schema: CostEstimateSchema</text>
+
+  <rect x="600" y="385" width="170" height="28" rx="6" fill="#0d1f12" stroke="#22c55e" stroke-width="0.5"/>
+  <text x="610" y="403" fill="#86efac" font-size="9">{ monthly, breakdown[], notes }</text>
+
+  <rect x="430" y="420" width="340" height="22" rx="6" fill="#0d1f12" stroke="#64748b" stroke-width="0.5"/>
+  <text x="600" y="435" text-anchor="middle" fill="#94a3b8" font-size="9">Estimates monthly cost per resource using AI analysis</text>
+
+  <!-- Arrow: Cost Estimate -> Output -->
+  <line x1="790" y1="390" x2="890" y2="390" stroke="url(#arrowGrad)" stroke-width="2" marker-end="url(#greenArrow)"/>
+
+  <!-- ═══════════ OUTPUT ═══════════ -->
+  <text x="910" y="310" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="2">OUTPUT</text>
+  <rect x="900" y="322" width="270" height="180" rx="14" fill="url(#greenGrad)" stroke="#22c55e" stroke-width="2" filter="url(#softShadow)"/>
+
+  <rect x="920" y="340" width="230" height="28" rx="6" fill="#0d1f12" stroke="#22c55e" stroke-width="0.5"/>
+  <text x="930" y="358" fill="#86efac" font-size="11" font-weight="600">terraformCode</text>
+  <text x="1070" y="358" fill="#64748b" font-size="10">string</text>
+
+  <rect x="920" y="376" width="230" height="28" rx="6" fill="#0d1f12" stroke="#22c55e" stroke-width="0.5"/>
+  <text x="930" y="394" fill="#86efac" font-size="11" font-weight="600">validation</text>
+  <text x="1040" y="394" fill="#64748b" font-size="10">ValidationResult</text>
+
+  <rect x="920" y="412" width="230" height="28" rx="6" fill="#0d1f12" stroke="#22c55e" stroke-width="0.5"/>
+  <text x="930" y="430" fill="#86efac" font-size="11" font-weight="600">costEstimate</text>
+  <text x="1055" y="430" fill="#64748b" font-size="10">CostEstimate</text>
+
+  <text x="1035" y="465" text-anchor="middle" fill="#64748b" font-size="10">Passed to Step 4</text>
+  <text x="1035" y="480" text-anchor="middle" fill="#64748b" font-size="10">(Human Approval)</text>
+
+  <!-- ═══════════ STREAM FLOW ═══════════ -->
+  <path d="M 500 452 C 500 530, 250 560, 160 560" stroke="url(#streamGrad)" stroke-width="2" fill="none" stroke-dasharray="6,4" class="animated-line" marker-end="url(#streamArrow)"/>
+  <text x="310" y="540" fill="#22d3ee" font-size="10">progress + validation status</text>
+
+  <rect x="30" y="545" width="140" height="35" rx="10" fill="#1e1e2e" stroke="#6366f1" stroke-width="1"/>
+  <text x="100" y="567" text-anchor="middle" fill="#c4b5fd" font-size="10">ProgressTimeline.tsx</text>
+
+  <!-- ═══════════ INFO BOXES ═══════════ -->
+  <rect x="30" y="610" width="360" height="60" rx="12" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="50" y="632" fill="#e2e8f0" font-size="11" font-weight="600">File: src/trigger/validate-terraform.ts</text>
+  <text x="50" y="650" fill="#94a3b8" font-size="10">Task ID: validateAndEstimate | Recursive self-healing loop</text>
+
+  <rect x="830" y="540" width="340" height="95" rx="12" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="850" y="562" fill="#e2e8f0" font-size="11" font-weight="600">Evaluator-Optimizer Pattern</text>
+  <text x="850" y="580" fill="#4ade80" font-size="10">1. generateObject() validates code</text>
+  <text x="850" y="596" fill="#fbbf24" font-size="10">2. generateText() fixes errors if invalid</text>
+  <text x="850" y="612" fill="#f59e0b" font-size="10">3. Recursive retry (up to 3 attempts)</text>
+  <text x="850" y="628" fill="#22c55e" font-size="10">4. generateObject() estimates cost when valid</text>
+</svg>
+</body>
+</html>

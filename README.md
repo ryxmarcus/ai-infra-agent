@@ -45,6 +45,60 @@ For animated, interactive versions of these diagrams, open the HTML files in you
 - [`diagrams/02-orchestrator-pipeline.html`](diagrams/02-orchestrator-pipeline.html) - Animated pipeline with glowing effects
 - [`diagrams/03-api-sequence-flow.html`](diagrams/03-api-sequence-flow.html) - Animated sequence flow
 
+### Component Deep Dives
+
+Detailed diagrams for each of the 5 pipeline steps, showing internal data flow, AI calls, streams, and retry logic.
+
+#### Component 1: AI Request Parser
+
+Parses natural language into a structured `InfrastructureRequest` using `generateObject()` with Zod schema validation.
+
+<p align="center">
+  <img src="diagrams/component1-ai-parser.svg" alt="Component 1: AI Request Parser" width="100%" />
+</p>
+
+[View interactive version](diagrams/component1-ai-parser.html)
+
+#### Component 2: Terraform Code Generator
+
+Generates production-ready Terraform HCL via `streamText()` with real-time code streaming to the frontend.
+
+<p align="center">
+  <img src="diagrams/component2-terraform-generator.svg" alt="Component 2: Terraform Code Generator" width="100%" />
+</p>
+
+[View interactive version](diagrams/component2-terraform-generator.html)
+
+#### Component 3: Validator & Auto-Fix Loop
+
+Self-healing evaluator-optimizer pattern: validates → fixes → re-validates (up to 3 attempts) → estimates cost.
+
+<p align="center">
+  <img src="diagrams/component3-validator-autofix.svg" alt="Component 3: Validator & Auto-Fix Loop" width="100%" />
+</p>
+
+[View interactive version](diagrams/component3-validator-autofix.html)
+
+#### Component 4: Human-in-the-Loop Approval
+
+Task pauses with `wait.forToken()` consuming zero compute, resumes when user approves or rejects via the frontend.
+
+<p align="center">
+  <img src="diagrams/component4-human-approval.svg" alt="Component 4: Human-in-the-Loop Approval" width="100%" />
+</p>
+
+[View interactive version](diagrams/component4-human-approval.html)
+
+#### Component 5: Terraform Deployer
+
+Writes `main.tf`, runs `terraform init` and `terraform apply`, streaming all output in real-time.
+
+<p align="center">
+  <img src="diagrams/component5-deployer.svg" alt="Component 5: Terraform Deployer" width="100%" />
+</p>
+
+[View interactive version](diagrams/component5-deployer.html)
+
 ---
 
 ## Project Structure

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component 2: Terraform Code Generator - AI Infra Agent</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; }
+    svg { max-width: 1400px; width: 100%; height: auto; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes dash { to { stroke-dashoffset: -20; } }
+    .animated-line { animation: dash 1s linear infinite; }
+    .pulse { animation: pulse 2s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a1a"/>
+      <stop offset="100%" style="stop-color:#111133"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0d33"/>
+      <stop offset="100%" style="stop-color:#2d1b69"/>
+    </linearGradient>
+    <linearGradient id="aiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0d2e"/>
+      <stop offset="100%" style="stop-color:#3b1d6e"/>
+    </linearGradient>
+    <linearGradient id="outputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0d33"/>
+      <stop offset="100%" style="stop-color:#2e1065"/>
+    </linearGradient>
+    <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#c084fc"/>
+    </linearGradient>
+    <linearGradient id="streamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#22d3ee"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="codeStreamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#e879f9"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+    <marker id="arrowHead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a855f7"/>
+    </marker>
+    <marker id="streamArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    </marker>
+    <marker id="codeArrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#e879f9"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="url(#bgGrad)"/>
+
+  <!-- Title -->
+  <text x="600" y="45" text-anchor="middle" fill="#e2e8f0" font-size="26" font-weight="bold">Component 2: Terraform Code Generator</text>
+  <text x="600" y="72" text-anchor="middle" fill="#94a3b8" font-size="13">generateTerraform — Structured Spec → Real-Time Streamed Terraform HCL</text>
+  <rect x="530" y="80" width="140" height="22" rx="11" fill="#2d1b69" stroke="#a855f7" stroke-width="1"/>
+  <text x="600" y="95" text-anchor="middle" fill="#c084fc" font-size="10" font-weight="600">STEP 2 — PURPLE</text>
+
+  <!-- ═══════════ INPUT ═══════════ -->
+  <text x="60" y="145" fill="#94a3b8" font-size="12" font-weight="600" letter-spacing="2">INPUT</text>
+  <rect x="50" y="160" width="220" height="200" rx="14" fill="url(#purpleGrad)" stroke="#a855f7" stroke-width="2" filter="url(#softShadow)"/>
+  <text x="160" y="190" text-anchor="middle" fill="#d8b4fe" font-size="13" font-weight="bold">InfrastructureRequest</text>
+
+  <rect x="70" y="205" width="180" height="25" rx="5" fill="#1a0d33" stroke="#a855f7" stroke-width="0.5"/>
+  <text x="80" y="222" fill="#c4b5fd" font-size="10">provider: "aws"</text>
+
+  <rect x="70" y="237" width="180" height="25" rx="5" fill="#1a0d33" stroke="#a855f7" stroke-width="0.5"/>
+  <text x="80" y="254" fill="#c4b5fd" font-size="10">projectName: "my-app"</text>
+
+  <rect x="70" y="269" width="180" height="25" rx="5" fill="#1a0d33" stroke="#a855f7" stroke-width="0.5"/>
+  <text x="80" y="286" fill="#c4b5fd" font-size="10">resources: [ec2, rds, s3]</text>
+
+  <rect x="70" y="301" width="180" height="25" rx="5" fill="#1a0d33" stroke="#a855f7" stroke-width="0.5"/>
+  <text x="80" y="318" fill="#c4b5fd" font-size="10">region: "eu-north-1"</text>
+
+  <text x="160" y="350" text-anchor="middle" fill="#64748b" font-size="10">From Step 1 output</text>
+
+  <!-- Arrow: Input -> AI Call -->
+  <line x1="270" y1="260" x2="370" y2="260" stroke="url(#arrowGrad)" stroke-width="2.5" marker-end="url(#arrowHead)"/>
+
+  <!-- ═══════════ CORE: STREAMING AI CALL ═══════════ -->
+  <text x="390" y="145" fill="#94a3b8" font-size="12" font-weight="600" letter-spacing="2">AI STREAMING ENGINE</text>
+  <rect x="380" y="160" width="440" height="340" rx="16" fill="url(#purpleGrad)" stroke="#a855f7" stroke-width="2" filter="url(#softShadow)"/>
+
+  <!-- streamText box -->
+  <rect x="405" y="180" width="390" height="50" rx="10" fill="#1a0d2e" stroke="#c084fc" stroke-width="1.5" filter="url(#glow)"/>
+  <text x="600" y="203" text-anchor="middle" fill="#d8b4fe" font-size="15" font-weight="bold">streamText()</text>
+  <text x="600" y="220" text-anchor="middle" fill="#64748b" font-size="10">Vercel AI SDK — Real-time text streaming</text>
+
+  <!-- Model -->
+  <rect x="405" y="245" width="185" height="40" rx="8" fill="#1a0d33" stroke="#a855f7" stroke-width="1"/>
+  <text x="410" y="260" fill="#64748b" font-size="9" font-weight="600">MODEL</text>
+  <text x="497" y="275" text-anchor="middle" fill="#c084fc" font-size="12" font-weight="600">Gemini 2.0 Flash</text>
+
+  <!-- System Prompt -->
+  <rect x="605" y="245" width="190" height="40" rx="8" fill="#1a0d33" stroke="#a855f7" stroke-width="1"/>
+  <text x="610" y="260" fill="#64748b" font-size="9" font-weight="600">SYSTEM PROMPT</text>
+  <text x="700" y="275" text-anchor="middle" fill="#c084fc" font-size="10">TERRAFORM_GENERATOR_SYSTEM_PROMPT</text>
+
+  <!-- KEY FEATURE: Pipe streaming -->
+  <rect x="405" y="300" width="390" height="55" rx="10" fill="#1a0d2e" stroke="#e879f9" stroke-width="2" filter="url(#glow)"/>
+  <text x="410" y="318" fill="#e879f9" font-size="10" font-weight="600">KEY FEATURE: REAL-TIME CODE STREAMING</text>
+  <text x="600" y="340" text-anchor="middle" fill="#f0abfc" font-size="13" font-weight="600">aiOutputStream.pipe(textStream)</text>
+
+  <!-- Dual streams -->
+  <rect x="405" y="370" width="185" height="45" rx="8" fill="#0d2137" stroke="#22d3ee" stroke-width="1"/>
+  <text x="410" y="385" fill="#22d3ee" font-size="9" font-weight="600">STREAM 1</text>
+  <text x="497" y="403" text-anchor="middle" fill="#22d3ee" font-size="11">progressStream</text>
+
+  <rect x="605" y="370" width="190" height="45" rx="8" fill="#1a0d2e" stroke="#e879f9" stroke-width="1"/>
+  <text x="610" y="385" fill="#e879f9" font-size="9" font-weight="600">STREAM 2</text>
+  <text x="700" y="403" text-anchor="middle" fill="#e879f9" font-size="11">aiOutputStream</text>
+
+  <!-- Retry -->
+  <rect x="405" y="430" width="185" height="40" rx="8" fill="#1a0d33" stroke="#f59e0b" stroke-width="1"/>
+  <text x="410" y="445" fill="#fbbf24" font-size="9" font-weight="600">RETRY</text>
+  <text x="497" y="460" text-anchor="middle" fill="#fbbf24" font-size="11">3 attempts</text>
+
+  <!-- Max duration -->
+  <rect x="605" y="430" width="190" height="40" rx="8" fill="#1a0d33" stroke="#64748b" stroke-width="1"/>
+  <text x="610" y="445" fill="#64748b" font-size="9" font-weight="600">MAX DURATION</text>
+  <text x="700" y="460" text-anchor="middle" fill="#94a3b8" font-size="11">120 seconds</text>
+
+  <!-- Arrow: AI Call -> Output -->
+  <line x1="820" y1="330" x2="890" y2="330" stroke="url(#arrowGrad)" stroke-width="2.5" marker-end="url(#arrowHead)"/>
+
+  <!-- ═══════════ OUTPUT ═══════════ -->
+  <text x="910" y="145" fill="#94a3b8" font-size="12" font-weight="600" letter-spacing="2">OUTPUT</text>
+  <rect x="900" y="160" width="260" height="180" rx="14" fill="url(#outputGrad)" stroke="#a855f7" stroke-width="2" filter="url(#softShadow)"/>
+
+  <text x="1030" y="190" text-anchor="middle" fill="#d8b4fe" font-size="14" font-weight="bold">terraformCode</text>
+  <text x="1030" y="210" text-anchor="middle" fill="#64748b" font-size="11">string (HCL)</text>
+
+  <rect x="920" y="225" width="220" height="90" rx="8" fill="#0d0d1a" stroke="#a855f7" stroke-width="0.5"/>
+  <text x="930" y="245" fill="#c084fc" font-size="10" font-family="monospace">provider "aws" {</text>
+  <text x="930" y="260" fill="#c084fc" font-size="10" font-family="monospace">  region = "eu-north-1"</text>
+  <text x="930" y="275" fill="#c084fc" font-size="10" font-family="monospace">}</text>
+  <text x="930" y="290" fill="#c084fc" font-size="10" font-family="monospace">resource "aws_instance" ...</text>
+  <text x="930" y="305" fill="#64748b" font-size="9" font-family="monospace">// streamed token by token</text>
+
+  <text x="1030" y="355" text-anchor="middle" fill="#64748b" font-size="10">Passed to Step 3 for validation</text>
+
+  <!-- ═══════════ STREAM FLOWS ═══════════ -->
+  <!-- Progress stream to frontend -->
+  <path d="M 497 415 C 497 530, 300 560, 200 560" stroke="url(#streamGrad)" stroke-width="2" fill="none" stroke-dasharray="6,4" class="animated-line" marker-end="url(#streamArrow)"/>
+  <text x="320" y="545" fill="#22d3ee" font-size="10">progress updates</text>
+
+  <!-- AI output stream to frontend -->
+  <path d="M 700 415 C 700 540, 500 580, 350 580" stroke="url(#codeStreamGrad)" stroke-width="2.5" fill="none" stroke-dasharray="8,4" class="animated-line" marker-end="url(#codeArrow)"/>
+  <text x="520" y="575" fill="#e879f9" font-size="10" font-weight="600">live code tokens →</text>
+
+  <!-- Frontend indicators -->
+  <rect x="50" y="545" width="160" height="35" rx="10" fill="#1e1e2e" stroke="#6366f1" stroke-width="1"/>
+  <text x="130" y="567" text-anchor="middle" fill="#c4b5fd" font-size="11">ProgressTimeline.tsx</text>
+
+  <rect x="50" y="590" width="160" height="35" rx="10" fill="#1e1e2e" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="130" y="612" text-anchor="middle" fill="#d8b4fe" font-size="11">TerraformViewer.tsx</text>
+
+  <!-- ═══════════ INFO BOXES ═══════════ -->
+  <rect x="50" y="640" width="340" height="45" rx="12" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="70" y="660" fill="#e2e8f0" font-size="11" font-weight="600">File: src/trigger/generate-terraform.ts</text>
+  <text x="70" y="676" fill="#94a3b8" font-size="10">Task ID: generateTerraform | Uses text streaming for live code display</text>
+
+  <rect x="850" y="550" width="310" height="80" rx="12" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="870" y="572" fill="#e2e8f0" font-size="11" font-weight="600">Key Concepts</text>
+  <text x="870" y="590" fill="#e879f9" font-size="10">• aiOutputStream.pipe() enables live streaming</text>
+  <text x="870" y="606" fill="#d8b4fe" font-size="10">• Code appears token-by-token in UI</text>
+  <text x="870" y="622" fill="#22d3ee" font-size="10">• Dual streams: progress + code content</text>
+</svg>
+</body>
+</html>
